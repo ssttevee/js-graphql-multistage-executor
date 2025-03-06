@@ -7,9 +7,11 @@
   "types": "./lib.d.ts",
   "type": "module",
   "files": [
+    "backends/*.map",
     "backends/*.cjs",
     "backends/*.mjs",
     "backends/*.d.ts",
+    "*.map",
     "*.cjs",
     "*.mjs",
     "*.d.ts"
