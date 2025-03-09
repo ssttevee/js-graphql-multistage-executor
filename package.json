@@ -39,7 +39,7 @@
     "typescript": "^5.1.6"
   },
   "peerDependencies": {
-    "fauna": "2.x",
+    "fauna": "*",
     "faunadb": "4.x",
     "graphql": "16.x"
   },
