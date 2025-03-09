@@ -27,7 +27,7 @@
     "@biomejs/biome": "^1.9.4",
     "@jest/globals": "^29.6.1",
     "@rollup/plugin-typescript": "^11.1.2",
-    "fauna": "^2.4.1",
+    "fauna": "npm:@insights-gaming/fauna@^2.5.1-0",
     "faunadb": "^4.8.0",
     "graphql": "^16.0.0",
     "jest": "^29.6.1",

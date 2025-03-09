@@ -8,7 +8,8 @@ import {
   type QuerySuccess,
   type QueryValue,
   ServiceError,
-  type Query as QueryCtor,
+  Query,
+  type QueryArgument,
 } from "fauna";
 import {
   type ExecutionArgs,
@@ -31,10 +32,6 @@ import type {
 import { type Middleware, flattenMiddleware } from "../utils";
 
 // HACK: change this either when there an `isQuery` helper or when `Query` is exported
-type Query = import("fauna").Query;
-const Query: typeof QueryCtor = fql`null`.constructor as any;
-
-type QueryInput = Query | QueryValue;
 
 function isExpr(e: any): e is Query {
   return e && e instanceof Query;
@@ -231,7 +228,7 @@ function safeMap(varName: string, fnExpr: Query): Query {
 
 function chainVarErrorOrNull(
   varName: string,
-  expr: QueryInput,
+  expr: QueryArgument,
   nullable = true,
 ): Query {
   return fql(
@@ -275,9 +272,9 @@ export type QueryFunction = (
 ) => Promise<QuerySuccess<any> | QueryFailure>;
 export type TypeResolver = (
   abstractType: GraphQLAbstractType,
-  value: QueryInput,
+  value: QueryArgument,
   executionArgs: ExecutionArgs,
-) => QueryInput;
+) => QueryArgument;
 export type WrappedValuePropGetter = (
   query: Query,
   prop: string | number,
@@ -307,7 +304,7 @@ function defaultQueryFunction(
 
 function defaultTypeResolver(
   abstractType: GraphQLAbstractType,
-  value: QueryInput,
+  value: QueryArgument,
 ) {
   return fql`(${value})?.__typename??{"@error":${`failed to resolve type for ${abstractType.name}`}}`;
 }
