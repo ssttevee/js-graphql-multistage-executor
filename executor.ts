@@ -299,6 +299,12 @@ class Execution<TDeferred> {
   ) {
     this.#backend = backend;
     this.#args = args;
+    if (
+      typeof this.#args.contextValue !== "object" ||
+      !this.#args.contextValue
+    ) {
+      this.#args.contextValue = {};
+    }
 
     this.#fieldResolverMiddleware = hooks.fieldResolverMiddleware;
     this.#getFieldResolver = hooks.fieldResolverGetterMiddleware(

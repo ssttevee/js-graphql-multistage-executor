@@ -4,7 +4,7 @@ import dts from "rollup-plugin-dts";
 const input = {
   lib: "executor.ts",
   helpers: "helpers.ts",
-  // "backends/faunadb": "backends/faunadb.ts",
+  "backends/faunadb": "backends/faunadb.ts",
   "backends/faunadbV10": "backends/faunadbV10.ts",
 };
 
