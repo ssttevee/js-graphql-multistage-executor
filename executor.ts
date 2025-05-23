@@ -741,7 +741,10 @@ class Execution<TDeferred> {
         }
 
         if (typeof node[key] !== "object") {
-          if (i < path.length - 2 && typeof path[i + 1] === "number") {
+          if (
+            i < path.length - 2 &&
+            (typeof path[i + 1] === "number" || path[i + 1] === "[]")
+          ) {
             node[key] = [];
           } else {
             node[key] = {};
@@ -760,7 +763,10 @@ class Execution<TDeferred> {
         }
 
         if (typeof node[key] !== "object") {
-          if (i < path.length - 2 && typeof path[i + 1] === "number") {
+          if (
+            i < path.length - 2 &&
+            (typeof path[i + 1] === "number" || path[i + 1] === "[]")
+          ) {
             node[key] = [];
           } else {
             node[key] = {};
