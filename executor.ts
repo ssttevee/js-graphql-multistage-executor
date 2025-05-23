@@ -707,7 +707,12 @@ class Execution<TDeferred> {
 
       if (key === "[]") {
         if (!Array.isArray(node)) {
-          throw new Error("Expected array but got non-array value");
+          this.#resultErrors.push(
+            new GraphQLError("Expected array but got non-array value", {
+              path: path.slice(0, i),
+            }),
+          );
+          return;
         }
 
         for (let j = 0; j < node.length; j++) {
@@ -723,7 +728,12 @@ class Execution<TDeferred> {
 
       if (typeof key === "number") {
         if (!Array.isArray(node)) {
-          throw new Error("Expected array but got non-array value");
+          this.#resultErrors.push(
+            new GraphQLError("Expected array but got non-array value", {
+              path: path.slice(0, i),
+            }),
+          );
+          return;
         }
 
         if (key >= node.length) {
@@ -741,7 +751,12 @@ class Execution<TDeferred> {
         node = node[key];
       } else {
         if (Array.isArray(node)) {
-          throw new Error("Expected object but got array value");
+          this.#resultErrors.push(
+            new GraphQLError("Expected object but got array value", {
+              path: path.slice(0, i),
+            }),
+          );
+          return;
         }
 
         if (typeof node[key] !== "object") {
