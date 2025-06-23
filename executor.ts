@@ -59,6 +59,7 @@ export interface ExpandedChild {
   concreteType: GraphQLObjectType;
   sourceValue: unknown;
   setData: (data: any) => void;
+  includeParentRaw: () => void;
 }
 
 export interface ExpandedAbstractType {
@@ -445,7 +446,7 @@ class Execution<TDeferred> {
           try {
             this.#step1_resolve.push({
               ...field,
-              sourceValue,
+              sourceValue: sourceValue["@raw"] ?? sourceValue,
             });
           } catch (err) {
             if (err instanceof GraphQLError) {
@@ -814,6 +815,7 @@ class Execution<TDeferred> {
     objectPath: Path | undefined,
     setDeferredChild?: (expr: TDeferred) => void,
     isAbstractParent?: boolean,
+    includeParentRaw?: () => void,
   ): Promise<any> {
     const fieldNode = fieldNodes[fieldNodeIndex];
     const fieldPath = addPath(objectPath, fieldNodeKey(fieldNode), undefined);
@@ -860,6 +862,7 @@ class Execution<TDeferred> {
       return result;
     } catch (e) {
       if (e === nextStage) {
+        includeParentRaw?.();
         this.#step3_restage.push({
           fieldNodes,
           fieldNodeIndex,
@@ -961,6 +964,7 @@ class Execution<TDeferred> {
               child.path,
               child.setData,
               isAbstractType(namedFieldType),
+              child.includeParentRaw,
             );
           },
         ),

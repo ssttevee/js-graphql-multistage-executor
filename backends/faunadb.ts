@@ -345,11 +345,16 @@ export default function createExecutorBackend(
                 dataContainer[key] = unwrapValue(data);
                 setDeferred(wrapQuery(getQuery()) as Expr);
               },
+              includeParentRaw: () => {
+                dataContainer["@raw"] = q.Var(varName);
+                setDeferred(wrapQuery(getQuery()) as Expr);
+              },
             };
           });
       }
 
       const branches: Record<string, Record<string, any>> = {};
+      let includeRaw = false;
       const getQuery = () => {
         const varNameType = `${varName}__typename`;
         return q.Let(
@@ -385,6 +390,7 @@ export default function createExecutorBackend(
                 `${varName}_result`,
                 q.Merge(q.Var(`${varName}_result`), {
                   __typename: q.Var(varNameType),
+                  ...(includeRaw ? { "@raw": q.Var(varName) } : {}),
                 }),
               ),
             ),
@@ -403,6 +409,10 @@ export default function createExecutorBackend(
               sourceValue: q.Var(varName),
               setData: (data) => {
                 (branches[concreteType.name] ??= {})[key] = unwrapValue(data);
+                setDeferred(wrapQuery(getQuery()) as Expr);
+              },
+              includeParentRaw: () => {
+                includeRaw = true;
                 setDeferred(wrapQuery(getQuery()) as Expr);
               },
             };

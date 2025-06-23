@@ -504,11 +504,16 @@ export default function createExecutorBackend(
                 dataContainer[key] = unwrapValue(data);
                 setDeferred(wrapQuery(getQuery()));
               },
+              includeParentRaw: () => {
+                dataContainer["@raw"] = fql([varName]);
+                setDeferred(wrapQuery(getQuery()));
+              },
             };
           });
       }
 
       const branches: Record<string, Record<string, any>> = {};
+      let includeRaw = false;
       const getQuery = () => {
         const varNameType = `${varName}__typename`;
         return fql(
@@ -543,9 +548,10 @@ export default function createExecutorBackend(
             : fql`null`,
           chainVarErrorOrNull(
             `${varName}_result`,
-            fql([
-              `Object.assign(${varName}_result, {__typename:${varNameType}})`,
-            ]),
+            fql([`Object.assign(${varName}_result,`, ")"], {
+              __typename: fql([varNameType]),
+              ...(includeRaw ? { "@raw": fql([varName]) } : {}),
+            }),
           ),
         );
       };
@@ -561,6 +567,10 @@ export default function createExecutorBackend(
               sourceValue: fql([varName]),
               setData: (data) => {
                 (branches[concreteType.name] ??= {})[key] = unwrapValue(data);
+                setDeferred(wrapQuery(getQuery()));
+              },
+              includeParentRaw: () => {
+                includeRaw = true;
                 setDeferred(wrapQuery(getQuery()));
               },
             };
